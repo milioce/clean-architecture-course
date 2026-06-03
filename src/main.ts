@@ -1,10 +1,9 @@
-import { CompositionRoot } from "./composition-root";
+import { UserTerminal } from "./presentation/UserTerminal";
 
-function main() {
+async function main() {
 
-  const presenter = CompositionRoot.createUserPresenter();
-
-  presenter.init();
+  const terminal = new UserTerminal();
+  await terminal.init();
 }
 
-main()
+main();

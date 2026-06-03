@@ -1,7 +1,9 @@
 import type { User } from "../domain/entity/user";
 
 export interface UserView {
-  showWelcome(): void;
+  showMenu(): Promise<void>;
+  showMessage(message: string): void;
+  showError(message: string): void;
   showAllUsers(User: User[]): void;
-  showCreateUser(): void;
+  showFormCreateUser(): Promise<void>;
 }

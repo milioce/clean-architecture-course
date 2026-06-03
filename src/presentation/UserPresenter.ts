@@ -1,3 +1,4 @@
+import { ValidationError } from "../domain/core/validation-error";
 import { User } from "../domain/entity/user";
 import type { CreateUserUseCase } from "../domain/usecases/createUser.usecase";
 import type { GetAllUsersUseCase } from "../domain/usecases/GetAllUsers.usecase";
@@ -7,39 +8,65 @@ export class UserPresenter {
   constructor(
     private view: UserView,
     private getAllUsersUseCase: GetAllUsersUseCase,
-    private createUserUseCase?: CreateUserUseCase
+    private createUserUseCase: CreateUserUseCase
   ) { }
 
-  init() {
-    this.initData();
-
-    this.view.showWelcome();
-    this.showAllUsers();
+  public async onInit() {
+    this.view.showMessage('Welcome to the Kata Users!');
+    await this.showMenu();
   }
 
-  async showAllUsers() {
-    const users = await this.getAllUsersUseCase.execute();
+  public async onSelectShowUser() {
+    await this.showAllUsers();
+    await this.showMenu();
+  }
 
+  public async onSelectCreateUser() {
+    await this.showFormUser();
+  }
+
+  public async onSubmitUserForm(name: string, email: string, password: string) {
+    await this.saveUser(name, email, password);
+    await this.showMenu();
+  }
+
+  public async onSelectExit() {
+    this.view.showMessage('The session is closed, see you soon!');
+  }
+
+
+  private async showMenu() {
+    await this.view.showMenu();
+  }
+
+
+  private async showAllUsers(): Promise<void> {
+    const users = await this.getAllUsersUseCase.execute();
     if (users.length === 0) {
-      this.showFormUser();
-    } else {
-      this.view.showAllUsers(users);
+      this.view.showMessage('There is no user');
+      return;
+    }
+
+    await this.view.showAllUsers(users);
+  }
+
+  private async showFormUser(): Promise<void> {
+    await this.view.showFormCreateUser();
+  }
+
+  private async saveUser(name: string, email: string, password: string) {
+    try {
+      const user = User.create({ id: 0, name, email, password });
+      await this.createUserUseCase.execute(user);
+      this.view.showMessage(`The user has been created`);
+
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        this.view.showError(err.message);
+      } else {
+        this.view.showError(`Unknown error`);
+      }
     }
   }
-
-  showFormUser() {
-    const user = this.view.showCreateUser();
-    this.showAllUsers();
-  }
-
-  private initData() {
-    const user1 = User.create({ id: 1, name: 'Emilio', email: 'emilio@gmail.com', password: 'password123' });
-    const user2 = User.create({ id: 2, name: 'Carlos', email: 'carlos@gmail.com', password: 'password456' });
-    const user3 = User.create({ id: 3, name: 'Ana', email: 'santiagoa@gmail.com', password: 'password789' });
-    this.createUserUseCase?.execute(user1);
-    this.createUserUseCase?.execute(user2);
-  }
-
-
 
 }
