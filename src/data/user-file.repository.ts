@@ -16,6 +16,7 @@ export class UserFileRepository implements UserRepository {
   }
 
   async getAllUsers(): Promise<User[]> {
+    this.users = await this.loadUsers();
     return this.users;
   }
 
@@ -27,7 +28,7 @@ export class UserFileRepository implements UserRepository {
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    const user = this.users.find(u => u.email.value === email);
+    const user = this.users.find(user => user.email.value === email);
     return user || null;
   }
 
