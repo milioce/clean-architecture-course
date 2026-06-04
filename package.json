@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "npx tsx src/main.ts",
     "dev": "vite",
+    "tsc": "tsc",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest"
