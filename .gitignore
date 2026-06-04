@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Users JSON file
-./users.json
+users.json
