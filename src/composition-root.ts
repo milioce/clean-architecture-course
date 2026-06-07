@@ -2,11 +2,12 @@ import type { UserView } from "./presentation/UserView";
 import { UserPresenter } from "./presentation/UserPresenter";
 import { GetAllUsersUseCase } from "./domain/usecases/GetAllUsers.usecase";
 import { CreateUserUseCase } from "./domain/usecases/createUser.usecase";
-import { UserInMemoryRepository } from "./data/user-Inmemory.repository";
+// import { UserInMemoryRepository } from "./data/user-Inmemory.repository";
+import { UserFileRepository } from "./data/user-file.repository";
 
 
 export function createPresenter(view: UserView) {
-  const repository = new UserInMemoryRepository();
+  const repository = new UserFileRepository();
   const getAllUsersUseCase = new GetAllUsersUseCase(repository);
   const createUserUseCase = new CreateUserUseCase(repository);
 
